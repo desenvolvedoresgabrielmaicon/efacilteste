@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatos e Equipes por Filial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark-blue: #0a192f;
+            --bg-light-blue: #112240;
+            --accent-cyan: #64ffda;
+            --text-primary: #ccd6f6;
+            --text-secondary: #8892b0;
+            --border-color: #233554;
+            --shadow-color: rgba(2, 12, 27, 0.7);
+            --highlight-bg: rgba(100, 255, 218, 0.1);
+            --error-color: #e57373;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        @keyframes network-flow {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: -100px 100px, 50px -50px, 0 0; }
+        }
+
+        body {
+            background-color: var(--bg-dark-blue);
+            background-image:
+                radial-gradient(circle at 25px 25px, var(--accent-cyan) 1px, transparent 2px),
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px, 25px 25px, 25px 25px;
+            background-attachment: fixed;
+            animation: network-flow 5s linear infinite;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        
+        #login-screen {
+            background-color: var(--bg-light-blue);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            z-index: 10;
+        }
+        
+        #login-screen.hidden { display: none; }
+        #login-screen h2 { color: var(--text-primary); font-size: 2em; margin-bottom: 10px; }
+        #login-screen p { color: var(--text-secondary); margin-bottom: 30px; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9em; color: var(--text-secondary); }
+        .input-group input { width: 100%; padding: 12px; background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 1em; transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-group input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(100, 255, 218, 0.2); }
+
+        #login-button { width: 100%; padding: 15px; background-color: var(--accent-cyan); border: none; border-radius: 6px; color: var(--bg-dark-blue); font-size: 1.1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        #login-button:hover { background-color: #8fffe9; }
+        #login-error { color: var(--error-color); margin-top: 15px; height: 1em; font-size: 0.9em; }
+
+        .container { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 5; }
+        .container.visible { display: flex; animation: fadeInContainer 0.5s ease-in-out; }
+        @keyframes fadeInContainer { from { opacity: 0; } to { opacity: 1; } }
+        
+        .sidebar { width: 350px; background-color: var(--bg-light-blue); border-right: 1px solid var(--border-color); padding: 25px; overflow-y: auto; flex-shrink: 0; box-shadow: 5px 0 15px var(--shadow-color); display: flex; flex-direction: column; }
+        .sidebar-header { margin-bottom: 30px; position: relative; } /* Posição relativa para o relógio */
+        .sidebar-header h1 { color: var(--text-primary); font-size: 1.8em; font-weight: 700; }
+        .sidebar-header p { color: var(--text-secondary); font-size: 0.9em; }
+
+        /* ========= NOVOS ESTILOS PARA RELÓGIO E LOGOUT ========= */
+        .header-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        #real-time-clock {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        #logout-button-container { display: block; margin-top: auto; } /* Exibe o container de logout */
+        /* ========= FIM DOS NOVOS ESTILOS ========= */
+
+        #branch-list { list-style: none; flex-grow: 1; }
+        #branch-list li { color: var(--text-secondary); padding: 15px 10px; margin: 5px 0; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+        #branch-list li:hover { background-color: var(--highlight-bg); color: var(--accent-cyan); }
+        #branch-list li.active { background-color: var(--accent-cyan); color: var(--bg-dark-blue); font-weight: 600; }
+        #branch-list li.active .arrow { border-color: var(--bg-dark-blue); }
+        #branch-list li .arrow { width: 8px; height: 8px; border-right: 2px solid var(--text-secondary); border-bottom: 2px solid var(--text-secondary); transform: rotate(-45deg); transition: all 0.2s ease-in-out; }
+        #branch-list li:hover .arrow { border-color: var(--accent-cyan); }
+        
+        #admin-actions { display: none; }
+        .action-button { width: 100%; padding: 15px; margin-top: 10px; background-color: transparent; border: 1px solid var(--accent-cyan); border-radius: 6px; color: var(--accent-cyan); font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .action-button:hover { background-color: var(--highlight-bg); }
+        
+        .content-area { flex-grow: 1; padding: 40px; overflow-y: auto; }
+        .branch-details { display: none; }
+        .branch-details.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .team-group { margin-bottom: 35px; }
+        .team-group h2 { color: var(--accent-cyan); font-size: 1.3em; font-weight: 600; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+        .contact-card { background: var(--bg-light-blue); border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 6px; margin-bottom: 10px; transition: all 0.2s ease-in-out; }
+        .contact-card:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(100, 255, 218, 0.1); border-color: var(--accent-cyan); }
+        .contact-card .title { color: var(--text-primary); font-weight: 500; }
+        .contact-card .info { color: var(--text-secondary); font-size: 0.9em; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 25, 47, 0.8); backdrop-filter: blur(5px); z-index: 1002; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-content { background-color: var(--bg-light-blue); border: 1px solid var(--border-color); padding: 30px; border-radius: 8px; width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-content h3 { color: var(--accent-cyan); margin-bottom: 10px; }
+        .modal-content p { color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9em; }
+        #json-editor { width: 100%; flex-grow: 1; background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); color: var(--text-primary); font-family: monospace; font-size: 14px; padding: 15px; border-radius: 6px; resize: none; }
+        .modal-actions { margin-top: 20px; display: flex; gap: 15px; justify-content: flex-end; }
+        .modal-actions .action-button { width: auto; padding: 10px 25px; }
+        .modal-actions .secondary { border-color: var(--text-secondary); color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h2>Acesso ao Sistema</h2>
+        <p>Organograma de Contatos</p>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <p id="login-error"></p>
+            <button type="submit" id="login-button">Acessar</button>
+        </form>
+    </div>
+
+    <div class="container" id="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Organograma</h1>
+                <p>Contatos e Equipes por Filial</p>
+                <div class="header-controls">
+                    <div id="real-time-clock"></div>
+                </div>
+                </div>
+            <ul id="branch-list"></ul>
+            <div id="admin-actions">
+                <button class="action-button" id="edit-data-button">Adicionar/Editar Filial</button>
+            </div>
+            <div id="logout-button-container">
+                 <button class="action-button" id="logout-button">Sair</button>
+            </div>
+        </aside>
+        <main class="content-area" id="content-area">
+             <div id="details-wrapper"></div>
+        </main>
+    </div>
+
+    <div id="data-editor-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Editor de Dados</h3>
+            <p>Adicione ou edite os dados abaixo no formato JSON. Clique em 'Salvar' para aplicar (a página será recarregada).</p>
+            <textarea id="json-editor"></textarea>
+            <div class="modal-actions">
+                <button class="action-button secondary" id="cancel-data-button">Cancelar</button>
+                <button class="action-button" id="save-data-button">Salvar e Recarregar</button>
+            </div>
+        </div>
+    </div>
+
+    <script id="mindmap-data" type="application/json">
+    {
+        "branches": [
+            { "name": "Porto União (PUN)", "id": "pun-node", "teams": [ { "type": "Gestor", "contacts": ["JEISON (42 98810-2838)"] }, { "type": "Logística", "contacts": ["GUILHERME FELIPE REGERT STROHMAYER (42 8403-2349)"] }, { "type": "Implantação", "contacts": ["WILLIAL TAFAREL (42 8427-1332)", "PATRICK (42 9842-8267)", "MICAEL (42 9824-8419)"] }, { "type": "Suporte", "contacts": ["IRINEU (42 8861-9969)", "DOUGLAS KRESKO (42 8831-7158)", "RAFAEL ADAMI (42 9950-3944)"] }, { "type": "Localidades Vinculadas", "contacts": ["Paula Freitas (Suporte e Implantação)", "Irineópolis (Suporte e Implantação)"] } ] },
+            { "name": "Itapoá (ITH)", "id": "ith-node", "teams": [ { "type": "Gestor", "contacts": ["MATEUS DE ANDRADE (49 8831-7755)"] }, { "type": "Logística", "contacts": ["Implantação: MONICA ROOS (41 8460-9583)", "Suporte: GISELE BUENO (47 9774-1206)", "Suporte: MONICA BRESOLIN (47 9148-2744)"] }, { "type": "Implantação", "contacts": ["JUAN NOGUEIRA (47 9 7448-8233)", "MARCOS ROBERTO PIRES (47 9 9160-2163)", "JEAN P LEDESMA (47 9 9754-8648)", "FAGNER SCHIMITT (47 9 9719-4357)", "LUIZ F FIOSA (47 9 9290-4649)", "MAICON ANDREY (49 9 8835-6791)", "DIOGO VELHO (47 99642-9842)"] }, { "type": "Suporte Técnico", "contacts": ["WELLINGTON MATHEUS MELLO (42 9 9123-6199)", "JONAS ELIEL (42 9 9185-9780 / 47 9 2505-5914)", "LAURO TAWAN (49 9 9178-1322)", "KAYO, BLENDON (47 9 9956-6791)", "EMANUEL MENDES (42 9 9127-9607)"] }, { "type": "Suporte Auxiliar", "contacts": ["MARCUS VINICIUS (47 9 9241-3861)", "MATHEUS OLIVEIRA (47 9 9721-3116)", "RENAN HENRIQUE (47 9 9226-7260)"] }, { "type": "Equipes por Localidade (Itapoá)", "contacts": ["GARUVA, BARRA DO SAÍ, CAMBIJU, RAINHA I, SUPORTE I, INSTALAÇÃO (JUAN, EMANUEL, MATHEUS)", "ITAPEMA NORTE, SAMAMBAIA, SAO JOSE I, 2 TERCEIROS, 2 SUPORTES (JEAN, FAGNER, JONAS, GIOVANE, KAIO)", "MAREDA, CENTRO, PAESE I, 1 TERCEIRO, 2 SUPORTES (MAICON/TECELI, LAURO, RENAN, MARCOS, GILBERTO)", "CONTINENTAL, PONTAL, AGUA BRANCA, SAO FRANCISCO I, 1 TERCEiro, 1 SUPORTE (DIOGO/ALEXANDRE, WELLINGTON, JOÃO)"] } ] },
+            { "name": "Caçador (CDR)", "id": "cdr-node", "teams": [ { "type": "Gestor", "contacts": ["ERICA ZAINE (42 93505-6136)"] }, { "type": "Logística", "contacts": ["Suporte: JOAO VICTOR (42 99817-4036)", "Implantação: ALAN PACHECO (Afastado, Contatar JOÃO VICTOR 42 99843-3758)"] }, { "type": "Implantação", "contacts": ["VANDERLEI (49 98427-4690)", "MARCELO PRESTES (49 98827-2001)", "MARCELO AGNES (49 99952-4840)", "Terceiro: LUCAS OLIMPIO (49 92000-6538)", "RUAN ESTEVÃO (49 9989-7877)", "Terceiro: JORGE (49 99924-3993)"] }, { "type": "Suporte", "contacts": ["TADEU (49 98404-1192)", "ANDRE (49 99999-6012)", "SIDINEI (49 98859-4460)", "CLEVERSON LASTA (49 99815-0177)", "KELSON MATEUS (49 9989-7877)"] } ] },
+            { "name": "Irati (IRI)", "id": "iri-node", "teams": [ { "type": "Gestor", "contacts": ["ANDRE CRISTO (42 9 2001-8184 / 42 9 3505-6126)"] }, { "type": "Logística (Suporte e Implantação)", "contacts": ["GUILHERME RANGEL (42 9 3505-6133)"] }, { "type": "Implantação", "contacts": ["MARCOS MARCONDES (42 9 9962-5343)", "RONALDO MARCONDES (42 9 9847-0630)", "Auxiliar: CLEVERTON PEDRO (42 9 9986-3271)"] }, { "type": "Suporte (IRI, FEP, TXR, IUV, PEI)", "contacts": ["DIEGO BONFIM (42 9 9927-0969)", "LUIZ RAMON (42 9 9870-8267)", "CESAR HENRIQUE (42 9 9944-9573)", "RAFAEL DE PADUA (42 9 9800-4553)", "ALISSON MOLINARI (42 9 9819-1404)"] }, { "type": "SSL", "contacts": ["HYURI LEPINSKI (42 9 8832-0737)", "Auxiliar: WELLIGHTON JOSE (42 9 8861-2363)"] } ] },
+            { "name": "Canoinhas (CNI)", "id": "cni-node", "teams": [ { "type": "Gestor Geral", "contacts": ["JEISON (42 98810-2838)"] }, { "type": "Logística", "contacts": ["Suporte: GABRIEL HERNESTO (42 98869-9699)", "Implantação: LAIANE DURAU (47 99274-6274)", "Upgrade: ELEN JAINE (47 9 8496-9673)"] }, { "type": "Equipe Canoinhas (Implantação)", "contacts": ["ALEXANDRE (47 99685-6642)", "EVERTON (47 98479-3702)", "KAUAN (47 99292-9564)", "JEFFERSON (47 9609-639)"] }, { "type": "Equipe Canoinhas (Suporte)", "contacts": ["ANDREI CARVALHO (47 8410-0075)", "LUCAS DE CAMARGO (47 9934-9287)", "AXEL PIERRI (47 8404-4131)", "LUIS PAULO PEREIRA (47 99783-0108)"] }, { "type": "Equipe Papanduva (PPV)", "contacts": ["Suporte/Implantação: MARCIO ANTUNES (47 93505-5979)"] }, { "type": "Equipe Itaiópolis (ILS)", "contacts": ["Suporte/Implantação: RAFAEL ORTH (42 98874-2801)"] } ] },
+            { "name": "Chapecó (CCO)", "id": "cco-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO SBARAINI (49 8427-7527)"] }, { "type": "Implantação (Empresas Terceirizadas)", "contacts": ["EMP CLIQUE - 03 (49 9133-4693)", "EMP JUNIOR (48 9121-7283)", "EMP KGC (49 8895-8308)", "EMP RICARDO (Livre)"] }, { "type": "Suporte", "contacts": ["Lentidão: MATHEUS ROCHA (49 9811-0102)", "Sem Acesso: RAICLAN FERREIRA (49 9173-6972)", "THOMAS LUIZ (Agenda Livre)", "Sem Acesso: JAMISSON (49 9185-0649)"] } ] },
+            { "name": "Curitibanos (CBS)", "id": "cbs-node", "teams": [ { "type": "Gestor Geral", "contacts": ["ROBSON CARLOS TIZOTTI (49 9921-0590)"] }, { "type": "Logística", "contacts": ["JORDAN ANDRE FREITAS (42 99817-4036)"] }, { "type": "Equipe Curitibanos", "contacts": ["Suporte/Implantação: CALONE (49 98917-2676)", "Implantação Terceiro: GABRIEL (49 93380-9316)", "Implantação Terceiro: JOAO FELIPE (49 8871-4363)"] }, { "type": "Equipe Santa Cecilia (STAC)", "contacts": ["Implantação/Suporte: ALISSON (49 99109-0598)", "Implantação/Suporte: EDUARDO (49 991412919)"] }, { "type": "Equipe Fraiburgo (FGO)", "contacts": ["Implantação/Suporte: LEOMAR (49 9830-1119)"] } ] },
+            { "name": "Joaçaba (JBA)", "id": "jba-node", "teams": [ { "type": "Gestor Geral", "contacts": ["BRUNO BORINI (42 92001-1461)"] }, { "type": "Logística", "contacts": ["ALINE FRACARI PEREIRA (49 9 9914-0346)"] }, { "type": "Equipe Joaçaba", "contacts": [ "Implantação: LEOMIR ALVES DA SILVA (49 9 9910-0241)", "Auxiliar: DANIEL AGRIPINO (49 9 9168-3065)", "Terceiro: ALTAIR FERNANDES SCAPINI (49 9 9111-9806)", "Terceiro (FIT/BFTTA): VITOR ANTUNES (49 9 9834-8822)", "Suporte (Sem Acesso): GABRIEL JOSE ALVES (49 9 9971-2328)", "Suporte: RAFAEL CARVALHO (49 9 9915-1278)"] }, { "type": "Equipe Catanduvas (CAT)", "contacts": [ "Suporte/Implantação: WILLIAM ALVES (49 9 9181-4004)", "Auxiliar: GUILHERME PASOLD (50 9 9825-6524)" ] } ] },
+            { "name": "Videira (VII)", "id": "vii-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO BORINI (42 92001-1461)"] }, { "type": "Logística", "contacts": ["Implantação: GILVANDRO GUILL (49 99111-0765 / 49 99111-0765)", "Suporte: GESSICA APARECIDA (49 93505-0826)"] }, { "type": "Implantação", "contacts": ["UALTER RIBEIRO (49 99202-5568)", "EZEQUIEL RAMOS (42 99929-1894)", "VALDOMIRO KELVER (49 99111-9806)", "CHRISTIAN CENDRON (49 99124-8141)"] }, { "type": "Suporte", "contacts": ["MARCELO ZANUSO/GIORDAN (49 99154-7781 / 49 99192-7653)", "Sem Acesso: LUCAS HENRIQUE (49 99911-2799)", "Sem Acesso: FERNANDO DE JESUS (49 99911-2248)"] }, { "type": "Suporte Upgrade", "contacts": ["JEFFERSON KAFFER (49 99950-7753)", "HENRIQUE DELCIR (49 99170-0702)"] } ] },
+            { "name": "Rio do Sul (RSL)", "id": "rsl-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO BUCHOLZ (49 99928-9094)"] }, { "type": "Logística", "contacts": ["MARCIO HONORIO (47 98822-8458)"] }, { "type": "Suporte/Implantação", "contacts": ["FELIPE JUVENAL (47 999716-3666)", "RAFAEL MEDEIROS (49 99114-3952)", "BRUNO ANDRESLEY (47 99128-7618) - ILIPIAL/KALI/YVRM", "DIEGO ROSA (47 98865-7771)", "WEVERTON GODARSKI (49 99982-0547) - IRRLOS"] }, { "type": "Auxiliares", "contacts": ["GUSTAVO FELIPE SANTOS (47 93505-5998) - Aux Felipe", "AURELIO (Aux Rafael)", "JOAO VITOR FARIAS (47 9 9166-7205) - Aux Diego", "WILLIAM VICTOR (47 99706-2277) - Aux Weverton (IRRLOS)"] } ] },
+            { "name": "Itajaí (IAI)", "id": "iai-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO BUCHOLZ (49 99928-9094)"] }, { "type": "Logística", "contacts": ["MARCIO HONORIO (47 98822-8458)"] }, { "type": "Suporte/Implantação", "contacts": ["MATHEUS MARTINS SOARES (47 9 3505-5981)"] }, { "type": "Auxiliar", "contacts": ["MARCELO GUSTAVO BECHER (47 9 8801-7594)"] } ] }
+        ]
+    }
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==========================================================
+            // INÍCIO: VARIÁVEIS E FUNÇÕES PRINCIPAIS
+            // ==========================================================
+            const dataScript = document.getElementById('mindmap-data');
+            let data = {};
+            let clockInterval = null; // Para controlar o relógio
+            
+            // Elementos da UI
+            const loginScreen = document.getElementById('login-screen');
+            const mainContent = document.getElementById('main-content');
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+            const branchList = document.getElementById('branch-list');
+            const detailsWrapper = document.getElementById('details-wrapper');
+            const adminActions = document.getElementById('admin-actions');
+            const logoutButtonContainer = document.getElementById('logout-button-container');
+            const logoutButton = document.getElementById('logout-button');
+            const editDataButton = document.getElementById('edit-data-button');
+            const dataEditorModal = document.getElementById('data-editor-modal');
+            const jsonEditor = document.getElementById('json-editor');
+            const saveDataButton = document.getElementById('save-data-button');
+            const cancelDataButton = document.getElementById('cancel-data-button');
+            const clockElement = document.getElementById('real-time-clock');
+
+            // Credenciais
+            const users = { admin: 'padrao123', user: 'gegcli2014' };
+
+            // ==========================================================
+            // FUNÇÃO: INICIAR RELÓGIO
+            // ==========================================================
+            function startClock() {
+                if (clockInterval) clearInterval(clockInterval);
+                clockInterval = setInterval(() => {
+                    const now = new Date();
+                    clockElement.textContent = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                }, 1000);
+            }
+            
+            // ==========================================================
+            // FUNÇÃO: RENDERIZAR CONTEÚDO DO ORGANOGRAMA
+            // ==========================================================
+            function initializeContent() {
+                // Carrega os dados do localStorage ou do script inicial
+                try {
+                    const savedData = localStorage.getItem('mindmapData');
+                    data = savedData ? JSON.parse(savedData) : JSON.parse(dataScript.textContent);
+                } catch (e) {
+                    console.error("Erro ao carregar dados JSON:", e);
+                    data = { branches: [] };
+                }
+                
+                // Limpa conteúdo anterior
+                branchList.innerHTML = '';
+                detailsWrapper.innerHTML = '';
+
+                if (!data || !data.branches) return;
+
+                data.branches.forEach((branch) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>${branch.name}</span><span class="arrow"></span>`;
+                    li.dataset.target = branch.id;
+                    branchList.appendChild(li);
+
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'branch-details';
+                    detailsDiv.id = branch.id;
+
+                    if (branch.teams && branch.teams.length > 0) {
+                        branch.teams.forEach(team => {
+                            const groupDiv = document.createElement('div');
+                            groupDiv.className = 'team-group';
+                            let teamHTML = `<h2>${team.type}</h2>`;
+                            team.contacts.forEach(contact => {
+                                const parts = contact.split(': ');
+                                const contactHTML = (parts.length > 1) 
+                                    ? `<div class="info">${parts[0]}:</div><div class="title">${parts[1]}</div>` 
+                                    : `<div class="title">${contact}</div>`;
+                                teamHTML += `<div class="contact-card">${contactHTML}</div>`;
+                            });
+                            groupDiv.innerHTML = teamHTML;
+                            detailsDiv.appendChild(groupDiv);
+                        });
+                    } else {
+                        detailsDiv.innerHTML = `<div class="team-group"><h2>Sem informações detalhadas no momento.</h2></div>`;
+                    }
+                    detailsWrapper.appendChild(detailsDiv);
+                });
+
+                // Adiciona listeners de clique aos itens da lista
+                const listItems = document.querySelectorAll('#branch-list li');
+                listItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        listItems.forEach(li => li.classList.remove('active'));
+                        document.querySelectorAll('.branch-details').forEach(div => div.classList.remove('active'));
+                        this.classList.add('active');
+                        document.getElementById(this.dataset.target).classList.add('active');
+                    });
+                });
+
+                // Clica no primeiro item por padrão
+                if (listItems.length > 0) {
+                    listItems[0].click();
+                }
+            }
+
+            // ==========================================================
+            // LÓGICA DE LOGIN, LOGOUT E SESSÃO
+            // ==========================================================
+            function showLoginScreen() {
+                if (clockInterval) clearInterval(clockInterval);
+                mainContent.classList.remove('visible');
+                loginScreen.classList.remove('hidden');
+                loginForm.reset();
+                sessionStorage.removeItem('loggedInUser');
+            }
+
+            function showMainScreen(username) {
+                loginScreen.classList.add('hidden');
+                mainContent.classList.add('visible');
+                adminActions.style.display = (username === 'admin') ? 'block' : 'none';
+                startClock();
+                initializeContent();
+            }
+            
+            logoutButton.addEventListener('click', showLoginScreen);
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const username = loginForm.username.value;
+                const password = loginForm.password.value;
+
+                if (users[username] && users[username] === password) {
+                    loginError.textContent = '';
+                    sessionStorage.setItem('loggedInUser', username);
+                    showMainScreen(username);
+                } else {
+                    loginError.textContent = 'Usuário ou senha inválidos.';
+                }
+            });
+
+            // Lógica do Editor de Dados (Modal)
+            editDataButton.addEventListener('click', () => {
+                const currentData = JSON.parse(localStorage.getItem('mindmapData')) || data;
+                jsonEditor.value = JSON.stringify(currentData, null, 4);
+                dataEditorModal.classList.add('visible');
+            });
+            cancelDataButton.addEventListener('click', () => dataEditorModal.classList.remove('visible'));
+            saveDataButton.addEventListener('click', () => {
+                try {
+                    JSON.parse(jsonEditor.value);
+                    localStorage.setItem('mindmapData', jsonEditor.value);
+                    alert('Dados salvos com sucesso! A página será recarregada.');
+                    location.reload();
+                } catch (e) {
+                    alert('Erro no formato JSON! Por favor, corrija antes de salvar.');
+                }
+            });
+            
+            // Verifica se já existe uma sessão ativa ao carregar a página
+            const loggedInUser = sessionStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                showMainScreen(loggedInUser);
+            }
+        });
+    </script>
+</body>
+</html>
