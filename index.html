@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organograma de Contatos e Equipes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark-blue: #0a192f;
+            --bg-light-blue: #112240;
+            --accent-cyan: #64ffda;
+            --text-primary: #ccd6f6;
+            --text-secondary: #8892b0;
+            --border-color: #233554;
+            --shadow-color: rgba(2, 12, 27, 0.7);
+            --highlight-bg: rgba(100, 255, 218, 0.1);
+            --error-color: #e57373;
+            --success-color: #64ffda;
+            --highlight-yellow: #FEEA00;
+        }
+        body.light-theme {
+            --bg-dark-blue: #f0f2f5;
+            --bg-light-blue: #ffffff;
+            --accent-cyan: #007bff;
+            --text-primary: #1c1e21;
+            --text-secondary: #606770;
+            --border-color: #dddfe2;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --highlight-bg: rgba(0, 123, 255, 0.1);
+            --highlight-yellow: #ffc107;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes network-flow {
+            0% { background-position: 0 0, 0 0, 0 0; }
+            100% { background-position: -100px 100px, 50px -50px, 0 0; }
+        }
+        body {
+            background-color: var(--bg-dark-blue);
+            background-image:
+                radial-gradient(circle at 25px 25px, var(--accent-cyan) 1px, transparent 2px),
+                linear-gradient(rgba(136, 146, 176, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(136, 146, 176, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px, 25px 25px, 25px 25px;
+            background-attachment: fixed;
+            animation: network-flow 5s linear infinite;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark-blue); }
+        ::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 10px; border: 2px solid var(--bg-dark-blue); }
+        ::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+        #login-screen {
+            background-color: var(--bg-light-blue); padding: 40px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px var(--shadow-color); z-index: 10; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #login-screen h2 { color: var(--text-primary); font-size: 2em; margin-bottom: 10px; }
+        #login-screen p { color: var(--text-secondary); margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9em; color: var(--text-secondary); }
+        .input-group input { width: 100%; padding: 12px; background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 1em; transition: all 0.2s; }
+        .input-group input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 10px var(--highlight-bg); }
+        #login-button { width: 100%; padding: 15px; background-color: var(--accent-cyan); border: none; border-radius: 6px; color: var(--bg-dark-blue); font-size: 1.1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        body.light-theme #login-button { color: #fff; }
+        #login-button:hover { filter: brightness(1.1); }
+        #login-error { color: var(--error-color); margin-top: 15px; height: 1em; font-size: 0.9em; }
+        .container { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 5; }
+        .container.visible { display: flex; animation: fadeInContainer 0.5s ease-in-out; }
+        @keyframes fadeInContainer { from { opacity: 0; } to { opacity: 1; } }
+        .sidebar { width: 350px; background-color: var(--bg-light-blue); border-right: 1px solid var(--border-color); padding: 25px; overflow-y: auto; flex-shrink: 0; box-shadow: 5px 0 15px var(--shadow-color); display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s, background-color 0.3s; z-index: 100; }
+        .sidebar-header { margin-bottom: 20px; position: relative; }
+        .sidebar-header h1 { color: var(--text-primary); font-size: 1.8em; font-weight: 700; }
+        .sidebar-header p { color: var(--text-secondary); font-size: 0.9em; }
+        .header-controls { position: absolute; top: 5px; right: 0; }
+        #real-time-clock { font-family: 'Inter', sans-serif; font-size: 0.9em; font-weight: 500; color: var(--text-secondary); text-align: right; }
+        .search-container { margin-bottom: 20px; }
+        #search-bar { width: 100%; padding: 12px; background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 1em; transition: all 0.2s; }
+        #search-bar:focus { outline: none; border-color: var(--accent-cyan); }
+        #branch-list { list-style: none; flex-grow: 1; }
+        #branch-list li { color: var(--text-secondary); padding: 15px 10px; margin: 5px 0; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+        #branch-list li:hover { background-color: var(--highlight-bg); color: var(--accent-cyan); }
+        #branch-list li.active { background-color: var(--accent-cyan); color: var(--bg-dark-blue); font-weight: 600; }
+        body.light-theme #branch-list li.active { color: #fff; }
+        #branch-list li.active .arrow { border-color: var(--bg-dark-blue); }
+        body.light-theme #branch-list li.active .arrow { border-color: #fff; }
+        #branch-list li .arrow { width: 8px; height: 8px; border-right: 2px solid var(--text-secondary); border-bottom: 2px solid var(--text-secondary); transform: rotate(-45deg); transition: all 0.2s ease-in-out; }
+        #branch-list li:hover .arrow { border-color: var(--accent-cyan); }
+        .action-button { width: 100%; padding: 15px; margin-top: 10px; background-color: transparent; border: 1px solid var(--accent-cyan); border-radius: 6px; color: var(--accent-cyan); font-size: 1em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .action-button:hover { background-color: var(--highlight-bg); }
+        .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); font-size: 0.8em; color: var(--text-secondary); line-height: 1.4; text-align: center; }
+        .footer-controls { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 20px; }
+        .content-area { flex-grow: 1; padding: 40px; overflow-y: auto; position: relative; }
+        .branch-details { display: none; }
+        .branch-details.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .team-group { margin-bottom: 35px; }
+        .team-group h2 { color: var(--accent-cyan); font-size: 1.3em; font-weight: 600; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .contact-card { background: var(--bg-light-blue); border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 6px; margin-bottom: 10px; transition: all 0.2s ease-in-out; display: flex; justify-content: space-between; align-items: center; }
+        .contact-card:hover { transform: translateY(-3px); box-shadow: 0 0 15px var(--highlight-bg); border-color: var(--accent-cyan); }
+        .contact-content { flex-grow: 1; }
+        .contact-card .title { color: var(--text-primary); font-weight: 500; }
+        .contact-card .info { color: var(--text-secondary); font-size: 0.9em; }
+        .contact-actions button { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.1em; transition: color 0.2s; padding: 5px; }
+        .contact-actions button:hover { color: var(--accent-cyan); }
+        .on-call-schedule { display: flex; flex-direction: column; gap: 10px; }
+        .on-call-week { background-color: var(--bg-light-blue); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 6px; transition: all 0.2s ease-in-out; border-left: 3px solid transparent; }
+        .on-call-week:hover { transform: translateY(-3px); box-shadow: 0 0 15px var(--highlight-bg); border-color: var(--accent-cyan); }
+        .on-call-week .dates { font-weight: 600; color: var(--text-primary); margin-bottom: 5px; font-size: 1em; }
+        .on-call-week .members { font-size: 0.9em; color: var(--text-secondary); }
+        .on-call-week.current { border-left-color: var(--highlight-yellow); background-color: var(--highlight-bg); }
+        .search-highlight { background-color: var(--highlight-yellow) !important; border-color: #FFC300 !important; transform: scale(1.02); }
+        .search-highlight .title, .search-highlight .info, .search-highlight .clickable-tech,
+        .search-highlight .dates, .search-highlight .members, .search-highlight .members strong { color: #0a192f !important; text-decoration-color: #0a192f !important; }
+        .clickable-tech { cursor: pointer; text-decoration: underline; text-decoration-color: var(--accent-cyan); text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color 0.2s, text-decoration-color 0.2s; }
+        .clickable-tech:hover { color: var(--accent-cyan); }
+        .clickable-tech.on-call-current { font-weight: bold; color: var(--accent-cyan); }
+        .observation-star { margin-left: 8px; color: var(--highlight-yellow); cursor: help; }
+        #details-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; }
+        #details-overlay.visible { opacity: 1; pointer-events: auto; }
+        #technician-details-panel { position: fixed; top: 0; right: -450px; width: 100%; max-width: 420px; height: 100%; background-color: var(--bg-light-blue); border-left: 1px solid var(--border-color); box-shadow: -10px 0 30px var(--shadow-color); z-index: 1001; transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); display: flex; flex-direction: column; }
+        #technician-details-panel.open { right: 0; }
+        .panel-content { padding: 25px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; flex-shrink: 0; }
+        .panel-header h3 { color: var(--accent-cyan); font-size: 1.5em; }
+        #panel-close-btn { font-size: 2.5em; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; line-height: 1; border: none; background: none; padding: 0; }
+        #panel-close-btn:hover { color: var(--accent-cyan); }
+        .panel-body { flex-grow: 1; overflow-y: auto; padding-right: 10px; margin-right: -10px;}
+        .panel-section { margin-bottom: 25px; }
+        .panel-section h4 { color: var(--text-primary); margin-bottom: 10px; font-size: 1.1em; }
+        #panel-tech-photo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); margin-bottom: 15px; }
+        #panel-tech-contact { font-size: 1em; color: var(--text-secondary); }
+        #panel-tech-map-link { color: var(--accent-cyan); text-decoration: none; }
+        #panel-oncall-status { padding: 12px; border-radius: 6px; font-weight: 600; text-align: center; }
+        #panel-oncall-status.active { background-color: var(--highlight-yellow); color: var(--bg-dark-blue); }
+        #panel-oncall-status.inactive { background-color: var(--border-color); color: var(--text-secondary); }
+        #panel-schedule-list, #panel-observations-list { display: flex; flex-direction: column; gap: 10px; }
+        .schedule-item { background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; }
+        .schedule-item p { font-size: 0.9em; color: var(--text-secondary); }
+        .schedule-item.current-schedule { border-left: 3px solid var(--highlight-yellow); }
+        body.light-theme .schedule-item.current-schedule { background-color: #fffbeb; }
+        .observation-item { background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; }
+        .observation-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .observation-meta { font-size: 0.8em; color: var(--text-secondary); }
+        .observation-content p { flex-grow: 1; font-size: 0.9em; color: var(--text-primary); white-space: pre-wrap; word-break: break-word; }
+        .observation-content textarea { width: 100%; background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; padding: 8px; font-family: inherit; font-size: 0.9em; }
+        .observation-item.highlighted { border-left: 3px solid var(--highlight-yellow); background-color: var(--highlight-bg); }
+        .observation-actions { display: flex; gap: 8px; }
+        .observation-actions button { background: none; border: none; cursor: pointer; font-size: 1.1em; color: var(--text-secondary); transition: color 0.2s; padding: 0; }
+        .observation-actions button:hover { color: var(--accent-cyan); }
+        #observation-input { width: 100%; height: 80px; background-color: var(--bg-dark-blue); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); padding: 10px; resize: vertical; margin-bottom: 10px; }
+        #add-observation-btn { width: 100%; padding: 10px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 25, 47, 0.8); backdrop-filter: blur(5px); z-index: 1002; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-content { background-color: var(--bg-light-blue); border: 1px solid var(--border-color); padding: 30px; border-radius: 8px; width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { padding: 15px 20px; border-radius: 6px; color: var(--bg-dark-blue); font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(calc(100% + 20px)); opacity: 0; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s; }
+        .toast.show { transform: translateX(0); opacity: 1; }
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--error-color); color: var(--text-primary); }
+        #notification-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.4em; cursor: pointer; transition: color 0.2s; }
+        #notification-btn:hover { color: var(--accent-cyan); }
+        .theme-switcher { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-dark-blue); transition: .4s; border-radius: 24px; border: 1px solid var(--border-color); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px; background-color: var(--text-secondary); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--bg-dark-blue); }
+        input:checked + .slider:before { transform: translateX(24px); background-color: var(--accent-cyan); }
+        #menu-toggle { display: none; }
+        
+        /* Estilos da Previsão do Tempo */
+        .weather-container {
+            background-color: var(--bg-light-blue);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 340px;
+            transition: all 0.3s ease;
+        }
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-right: 20px;
+            border-right: 1px solid var(--border-color);
+        }
+        .weather-icon {
+            font-size: 2.5em;
+            color: var(--accent-cyan);
+        }
+        .weather-info .temperature {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .weather-details {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .weather-details p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { display: block; }
+            .container.visible { flex-direction: column; }
+            .sidebar { position: fixed; left: -350px; top: 0; height: 100vh; transition: left 0.3s ease-in-out; z-index: 1100; }
+            .sidebar.open { left: 0; }
+            #menu-toggle { display: block; position: fixed; top: 20px; left: 20px; z-index: 1200; background: var(--bg-light-blue); color: var(--accent-cyan); border: 1px solid var(--border-color); border-radius: 50%; width: 50px; height: 50px; font-size: 1.5em; cursor: pointer; }
+            .content-area { padding: 80px 20px 20px 20px; }
+            #details-overlay.menu-open { opacity: 1; pointer-events: auto; z-index: 1099; }
+        }
+    </style>
+</head>
+<body>
+    
+    <button id="menu-toggle" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+
+    <div id="login-screen">
+        <h2>Acesso ao Sistema</h2>
+        <p>Organograma de Contatos</p>
+        <form id="login-form" novalidate>
+            <div class="input-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <p id="login-error"></p>
+            <button type="submit" id="login-button">Acessar</button>
+        </form>
+    </div>
+
+    <div class="container" id="main-content">
+        <aside class="sidebar" id="sidebar">
+            <header class="sidebar-header">
+                <h1>Organograma</h1>
+                <p>Contatos e Equipes por Filial</p>
+                <div class="header-controls">
+                    <div id="real-time-clock"></div>
+                </div>
+            </header>
+            
+            <div class="search-container">
+                <input type="search" id="search-bar" placeholder="Buscar..." aria-label="Buscar por filial ou técnico">
+            </div>
+
+            <nav aria-label="Navegação de Filiais">
+                <ul id="branch-list"></ul>
+            </nav>
+            
+            <footer class="sidebar-footer">
+                <div id="admin-actions" style="display: none;">
+                    <button class="action-button" id="edit-data-button" aria-label="Adicionar ou editar dados da filial">
+                        <i class="fa-solid fa-code"></i> Editar Dados JSON
+                    </button>
+                </div>
+                <div id="logout-button-container">
+                    <button class="action-button" id="logout-button">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sair
+                    </button>
+                </div>
+                <div class="footer-controls">
+                    <div class="theme-switcher">
+                        <i class="fa-solid fa-sun"></i>
+                        <label class="switch">
+                            <input type="checkbox" id="theme-toggle">
+                            <span class="slider"></span>
+                        </label>
+                        <i class="fa-solid fa-moon"></i>
+                    </div>
+                    <button id="notification-btn" title="Ativar notificações">
+                        <i class="fa-solid fa-bell"></i>
+                    </button>
+                </div>
+               <p style="margin-top: 15px;">
+                    Desenvolvido por<br>
+                    Gabriel Hernesto Talasz<br>
+                    & Maicon Gabriel Zipperer
+                </p>
+            </footer>
+        </aside>
+
+        <main class="content-area" id="content-area" role="main"></main>
+    </div>
+
+    <div id="details-overlay"></div>
+    
+    <div id="technician-details-panel">
+        <div class="panel-content">
+            <header class="panel-header">
+                <h3 id="panel-tech-name"></h3>
+                <button id="panel-close-btn" aria-label="Fechar painel de detalhes">×</button>
+            </header>
+            
+            <div class="panel-section" style="text-align: center;">
+                <img id="panel-tech-photo" src="" alt="Foto do Técnico">
+                <p id="panel-tech-contact"></p>
+                <a id="panel-tech-map-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+
+            <div class="panel-section">
+                <h4>Status de Sobreaviso Atual</h4>
+                <div id="panel-oncall-status"></div>
+            </div>
+            
+            <div class="panel-body">
+                <section class="panel-section" aria-labelledby="schedule-heading">
+                    <h4 id="schedule-heading">Próximas Escalas</h4>
+                    <div id="panel-schedule-list"></div>
+                </section>
+                <section class="panel-section" aria-labelledby="observations-heading">
+                    <h4 id="observations-heading">Observações</h4>
+                    <div id="panel-observations-list"></div>
+                </section>
+            </div>
+
+            <footer class="panel-section">
+                <h4>Adicionar Nova Observação</h4>
+                <textarea id="observation-input" placeholder="Digite sua observação..." aria-label="Nova observação"></textarea>
+                <button id="add-observation-btn" class="action-button">Adicionar Observação</button>
+            </footer>
+        </div>
+    </div>
+
+    <div id="data-editor-modal" class="modal-overlay"></div>
+    <div id="toast-container"></div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const initialData = {
+            "branches": [
+                {
+                    "name": "Porto União (PUN)", "id": "pun-node",
+                    "map": { "query": "Porto União, SC" },
+                    "teams": [
+                        { "type": "Gestor", "contacts": ["JEISON (42 98810-2838)"] },
+                        { "type": "Logística", "contacts": ["GUILHERME FELIPE REGERT STROHMAYER (42 8403-2349)"] },
+                        { "type": "Implantação", "contacts": ["WILLIAL TAFAREL (42 8427-1332)", "PATRICK (42 9842-8267)", "MICAEL (42 9824-8419)"] },
+                        { "type": "Suporte", "contacts": [
+                            "IRINEU (42 8861-9969)", 
+                            "DOUGLAS KRESKO (42 8831-7158)", 
+                            { "name": "RAFAEL ADAMI", "phone": "(42) 99950-3944", "photoUrl": "https://i.pravatar.cc/100?u=rafaeladami" }
+                        ]},
+                        { 
+                            "type": "Escala de Sobreaviso - Suporte",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["RAFAEL ADAMI", "ERIVELTON"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["DOUGLAS KRESKO", "EMERSON"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["RAFAEL ADAMI", "ERIVELTON"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["DOUGLAS KRESKO", "EMERSON"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["RAFAEL ADAMI", "ERIVELTON"]}
+                            ]
+                        },
+                        { "type": "Localidades Vinculadas", "contacts": ["Paula Freitas (Suporte e Implantação)", "Irineópolis (Suporte e Implantação)"] }
+                    ]
+                },
+                {
+                    "name": "Itapoá (ITH)", "id": "ith-node",
+                    "map": { "query": "Itapoá, SC" },
+                    "teams": [
+                        { "type": "Gestor", "contacts": ["MATEUS DE ANDRADE (49 8831-7755)"] },
+                        { "type": "Logística", "contacts": ["Implantação: MONICA ROOS (41 8460-9583)", "Suporte: GISELE BUENO (47 9774-1206)", "Suporte: MONICA BRESOLIN (47 9148-2744)"] },
+                        { "type": "Implantação", "contacts": ["JUAN NOGUEIRA (47 9 7448-8233)", "MARCOS ROBERTO PIRES (47 9 9160-2163)", "JEAN P LEDESMA (47 9 9754-8648)", "FAGNER SCHIMITT (47 9 9719-4357)", "LUIZ F FIOSA (47 9 9290-4649)", "MAICON ANDREY (49 9 8835-6791)", "DIOGO VELHO (47 99642-9842)"] },
+                        { "type": "Suporte Técnico", "contacts": ["WELLINGTON MATHEUS MELLO (42 9 9123-6199)", "JONAS ELIEL (42 9 9185-9780 / 47 9 2505-5914)", "LAURO TAWAN (49 9 9178-1322)", "KAYO BLENDON GONCALVES (47 9 9956-6791)", "EMANUEL MENDES (42 9 9127-9607)"] },
+                        { "type": "Suporte Auxiliar", "contacts": ["MARCUS VINICIUS (47 9 9241-3861)", "MATHEUS OLIVEIRA (47 9 9721-3116)", "RENAN HENRIQUE (47 9 9226-7260)"] },
+                        {
+                            "type": "Escala de Sobreaviso - Suporte",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["EMANUEL MENDES DE PROENCA", "GILBERTO FERREIRA JUNIOR", "LAURO TAWAN OLIVEIRA COSTA", "RENAN HENRIQUE DA SILVA BENKENDORF"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["JONAS ELIEL RODRIGUES", "BRUNO HENRIQUE HALISKI VIEIRA", "WELLINGTON MATHEUS MELLO", "KAYO BLENDON GONCALVES"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["EMANUEL MENDES DE PROENCA", "GILBERTO FERREIRA JUNIOR", "LAURO TAWAN OLIVEIRA COSTA", "RENAN HENRIQUE DA SILVA BENKENDORF"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["KAYO BLENDON GONCALVES", "JOAO ANDRE DA CUNHA FILHO", "WELLINGTON MATHEUS MELLO", "MARCUS VINICIUS LISBOA LEDOUX"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["EMANUEL MENDES DE PROENCA", "GILBERTO FERREIRA JUNIOR", "LAURO TAWAN OLIVEIRA COSTA", "RENAN HENRIQUE DA SILVA BENKENDORF"]}
+                            ]
+                        },
+                        { "type": "Equipes por Localidade (Itapoá)", "contacts": ["GARUVA, BARRA DO SAÍ, CAMBIJU, RAINHA I, SUPORTE I, INSTALAÇÃO (JUAN, EMANUEL, MATHEUS)", "ITAPEMA NORTE, SAMAMBAIA, SAO JOSE I, 2 TERCEIROS, 2 SUPORTES (JEAN, FAGNER, JONAS, GIOVANE, KAIO)", "MAREDA, CENTRO, PAESE I, 1 TERCEIRO, 2 SUPORTES (MAICON/TECELI, LAURO, RENAN, MARCOS, GILBERTO)", "CONTINENTAL, PONTAL, AGUA BRANCA, SAO FRANCISCO I, 1 TERCEiro, 1 SUPORTE (DIOGO/ALEXANDRE, WELLINGTON, JOÃO)"] }
+                    ]
+                },
+                {
+                    "name": "Caçador (CDR)", "id": "cdr-node",
+                    "teams": [
+                        { "type": "Gestor", "contacts": ["ERICA ZAINE (42 93505-6136)"] },
+                        { "type": "Logística", "contacts": ["Suporte: JOAO VICTOR (42 99817-4036)", "Implantação: ALAN PACHECO (Afastado, Contatar JOÃO VICTOR 42 99843-3758)"] },
+                        { "type": "Implantação", "contacts": ["VANDERLEI (49 98427-4690)", "MARCELO PRESTES (49 98827-2001)", "MARCELO AGNES (49 9952-4840)", "Terceiro: LUCAS OLIMPIO (49 92000-6538)", "RUAN ESTEVÃO (49 9989-7877)", "Terceiro: JORGE (49 99924-3993)"] },
+                        { "type": "Suporte", "contacts": ["TADEU (49 98404-1192)", "ANDRE (49 99999-6012)", "SIDINEI (49 98859-4460)", "CLEVERSON LASTA (49 99815-0177)", "KELSON MATEUS (49 9989-7877)"] },
+                        {
+                            "type": "Escala de Sobreaviso - Suporte",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["Willians Matteus Schmitz", "Kelson Mateus Merelles", "Ruan de Oliveira Estevão", "Guilherme Antoniolli"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["Marcelo Ribeiro Prestes", "Wellington Dos Santos Ramos", "Vanderlei Francisco Bertolino Fragoso", "Igor Gustavo de Souza Pereira"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["Ruan de Oliveira Estevão", "Vinicius Lima"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["Marcelo Ribeiro Prestes", "Welligton dos Santos Ramos", "Vanderlei Francisco Bertolino Fragoso", "Igor"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["Ruan de Oliveira Estevão", "Vinicius Lima"]}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Irati (IRI)", "id": "iri-node",
+                    "teams": [
+                        { "type": "Gestor", "contacts": ["ANDRE CRISTO (42 9 2001-8184 / 42 9 3505-6126)"] },
+                        { "type": "Logística (Suporte e Implantação)", "contacts": ["GUILHERME RANGEL (42 9 3505-6133)"] },
+                        { "type": "Implantação", "contacts": ["MARCOS MARCONDES (42 9 9962-5343)", "RONALDO MARCONDES (42 9 9847-0630)", "Auxiliar: CLEVERTON PEDRO (42 9 9986-3271)"] },
+                        { "type": "Suporte (IRI, FEP, TXR, IUV, PEI)", "contacts": ["DIEGO BONFIM (42 9 9927-0969)", "LUIZ RAMON (42 9 9870-8267)", "CESAR HENRIQUE (42 9 9944-9573)", "RAFAEL DE PADUA (42 9 9800-4553)", "ALISSON MOLINARI (42 9 9819-1404)"] },
+                        { "type": "SSL", "contacts": ["HYURI LEPINSKI (42 9 8832-0737)", "Auxiliar: WELLIGHTON JOSE (42 9 8861-2363)"] },
+                        {
+                            "type": "Escala de Sobreaviso - Irati",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["CESAR HENRIQUE", "DIOGO", "PEDRO"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["RAMON", "DIOGO", "PEDRO"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["RAFAEL", "PEDRO", "CESAR HENRIQUE"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["CESAR HENRIQUE", "RAMON", "PEDRO"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["RAMON", "ALISSON"]}
+                            ]
+                        },
+                        {
+                            "type": "Escala de Sobreaviso - São Mateus",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["WELLINGTON"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["HYURI"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["WELLINGTON", "HYURI"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["HYURI"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["WELLINGTON"]}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Canoinhas (CNI)", "id": "cni-node",
+                    "teams": [
+                        { "type": "Gestor Geral", "contacts": ["JEISON (42 98810-2838)"] },
+                        { "type": "Logística", "contacts": ["Suporte: GABRIEL HERNESTO (42 98869-9699)", "Implantação: LAIANE DURAU (47 99274-6274)", "Upgrade: ELEN JAINE (47 9 8496-9673)"] },
+                        { "type": "Equipe Canoinhas (Implantação)", "contacts": ["ALEXANDRE (47 99685-6642)", "EVERTON (47 98479-3702)", "KAUAN (47 99292-9564)", "JEFFERSON (47 9609-639)"] },
+                        { "type": "Equipe Canoinhas (Suporte)", "contacts": ["ANDREI CARVALHO (47 8410-0075)", "LUCAS DE CAMARGO (47 9934-9287)", "AXEL PIERRI (47 8404-4131)", "LUIS PAULO PEREIRA (47 99783-0108)"] },
+                        { "type": "Equipe Papanduva (PPV)", "contacts": ["Suporte/Implantação: MARCIO ANTUNES (47 93505-5979)"] },
+                        { "type": "Equipe Itaiópolis (ILS)", "contacts": ["Suporte/Implantação: RAFAEL ORTH (42 98874-2801)"] },
+                        {
+                            "type": "Escala de Sobreaviso - CNI/TBS",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["Luis Paulo", "Andrei"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["Lucas Camargo", "Alex"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["Axel pierre", "Andrei"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["Luis Paulo", "Alex"]}
+                            ]
+                        },
+                        {
+                            "type": "Escala de Sobreaviso - PPV/ILS/MOT",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["Raffael Orth", "Denis"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["Marcio Antunes", "João"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["Raffael Orth", "Denis"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["Marcio Antunes", "João"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["Raffael Orth", "Denis"]}
+                            ]
+                        }
+                    ]
+                },
+                { "name": "Chapecó (CCO)", "id": "cco-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO SBARAINI (49 8427-7527)"] }, { "type": "Implantação (Empresas Terceirizadas)", "contacts": ["EMP CLIQUE - 03 (49 9133-4693)", "EMP JUNIOR (48 9121-7283)", "EMP KGC (49 8895-8308)", "EMP RICARDO (Livre)"] }, { "type": "Suporte", "contacts": ["Lentidão: MATHEUS ROCHA (49 9811-0102)", "Sem Acesso: RAICLAN FERREIRA (49 9173-6972)", "THOMAS LUIZ (Agenda Livre)", "Sem Acesso: JAMISSON (49 9185-0649)"] } ] },
+                { 
+                    "name": "Curitibanos (CBS)", 
+                    "id": "cbs-node", 
+                    "teams": [ 
+                        { "type": "Gestor Geral", "contacts": ["ROBSON CARLOS TIZOTTI (49 9921-0590)"] }, 
+                        { "type": "Logística", "contacts": ["JORDAN ANDRE FREITAS (42 99817-4036)"] }, 
+                        { "type": "Equipe Curitibanos", "contacts": ["Suporte/Implantação: CALONE (49 98917-2676)", "Implantação Terceiro: GABRIEL (49 93380-9316)", "Implantação Terceiro: JOAO FELIPE (49 8871-4363)"] }, 
+                        { "type": "Equipe Santa Cecilia (STAC)", "contacts": ["Implantação/Suporte: ALISSON (49 99109-0598)", "Implantação/Suporte: EDUARDO (49 991412919)"] }, 
+                        { "type": "Equipe Fraiburgo (FGO)", "contacts": ["Implantação/Suporte: LEOMAR (49 9830-1119)"] },
+                        {
+                            "type": "Escala de Sobreaviso",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-11-09", "display_dates": "01/09 a 09/11", "members": ["Nenhum técnico escalado para este período"] }
+                            ]
+                        }
+                    ] 
+                },
+                { "name": "Joaçaba (JBA)", "id": "jba-node", "teams": [ { "type": "Gestor Geral", "contacts": ["BRUNO BORINI (42 92001-1461)"] }, { "type": "Logística", "contacts": ["ALINE FRACARI PEREIRA (49 9 9914-0346)"] }, { "type": "Equipe Joaçaba", "contacts": [ "Implantação: LEOMIR ALVES DA SILVA (49 9 9910-0241)", "Auxiliar: DANIEL AGRIPINO (49 9 9168-3065)", "Terceiro: ALTAIR FERNANDES SCAPINI (49 9 9111-9806)", "Terceiro (FIT/BFTTA): VITOR ANTUNES (49 9 9834-8822)", "Suporte (Sem Acesso): GABRIEL JOSE ALVES (49 9 9971-2328)", "Suporte: RAFAEL CARVALHO (49 9 9915-1278)"] }, { "type": "Equipe Catanduvas (CAT)", "contacts": [ "Suporte/Implantação: WILLIAM ALVES (49 9 9181-4004)", "Auxiliar: GUILHERME PASOLD (50 9 9825-6524)" ] } ] },
+                {
+                    "name": "Videira (VII)", "id": "vii-node",
+                    "teams": [
+                        { "type": "Gestor", "contacts": ["BRUNO BORINI (42 92001-1461)"] },
+                        { "type": "Logística", "contacts": ["Implantação: GILVANDRO GUILL (49 99111-0765 / 49 99111-0765)", "Suporte: GESSICA APARECIDA (49 93505-0826)"] },
+                        { "type": "Implantação", "contacts": ["UALTER RIBEIRO (49 99202-5568)", "EZEQUIEL RAMOS (42 99929-1894)", "VALDOMIRO KELVER (49 99111-9806)", "CHRISTIAN CENDRON (49 99124-8141)"] },
+                        { "type": "Suporte", "contacts": ["MARCELO ZANUSO/GIORDAN (49 99154-7781 / 49 99192-7653)", "Sem Acesso: LUCAS HENRIQUE (49 99911-2799)", "Sem Acesso: FERNANDO DE JESUS (49 99911-2248)"] },
+                        { "type": "Suporte Upgrade", "contacts": ["JEFFERSON KAFFER (49 99950-7753)", "HENRIQUE DELCIR (49 99170-0702)"] },
+                        {
+                            "type": "Escala de Sobreaviso - Suporte",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["Ezequiel R. do Bonfim", "Dionathan Danielewicz"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["Fernando de Jesus Roque", "Gilmar Pelentir"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["Kauan Viergutz Maidana", "Reelberti R. da Luz"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["Ezequiel R. do Bonfim", "Dionathan Danielewicz"]},
+                                {"dates": "2025-09-29/2025-10-05", "display_dates": "29/09 a 05/10", "members": ["Fernando de Jesus Roque", "Gilmar Pelentir"]}
+                            ]
+                        }
+                    ]
+                },
+                { "name": "Rio do Sul (RSL)", "id": "rsl-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO BUCHOLZ (49 99928-9094)"] }, { "type": "Logística", "contacts": ["MARCIO HONORIO (47 98822-8458)"] }, { "type": "Suporte/Implantação", "contacts": ["FELIPE JUVENAL (47 999716-3666)", "RAFAEL MEDEIROS (49 99114-3952)", "BRUNO ANDRESLEY (47 99128-7618) - ILIPIAL/KALI/YVRM", "DIEGO ROSA (47 98865-7771)", "WEVERTON GODARSKI (49 99982-0547) - IRRLOS"] }, { "type": "Auxiliares", "contacts": ["GUSTAVO FELIPE SANTOS (47 93505-5998) - Aux Felipe", "AURELIO (Aux Rafael)", "JOAO VITOR FARIAS (47 9 9166-7205) - Aux Diego", "WILLIAM VICTOR (47 99706-2277) - Aux Weverton (IRRLOS)"] } ] },
+                { "name": "Itajaí (IAI)", "id": "iai-node", "teams": [ { "type": "Gestor", "contacts": ["BRUNO BUCHOLZ (49 99928-094)"] }, { "type": "Logística", "contacts": ["MARCIO HONORIO (47 98822-8458)"] }, { "type": "Suporte/Implantação", "contacts": ["MATHEUS MARTINS SOARES (47 9 3505-5981)"] }, { "type": "Auxiliar", "contacts": ["MARCELO GUSTAVO BECHER (47 9 8801-7594)"] } ] },
+                {
+                    "name": "Piên (PYE)", "id": "pye-node",
+                    "teams": [
+                        {
+                            "type": "Escala de Sobreaviso - Piên e Região",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["ELISSON ANTONIO DILL", "THIAGO DE LIMA"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["LUCAS CIECILISNKI KIRSCHBAUER", "PAULO CESAR AVANCI"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["DOOUGLAS SILVA PEREIRA", "WESLEY DE PAULA DA SILVA", "ANDRÉ RICARDO BAUM"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["ANDRÉ RICARDO BAUM", "CHRISTIAN LEONAM CARNEIRO", "DOUGLAS SILVA PEREIRA"]},
+                                {"dates": "2025-09-29/2025-09-30", "display_dates": "29/09 a 30/09", "members": ["ELISSON ANTONIO DILL", "THIAGO DE LIMA"]}
+                            ]
+                        },
+                        {
+                            "type": "Escala de Sobreaviso - Mandirituba e Quitandinha",
+                            "schedule": [
+                                {"dates": "2025-09-01/2025-09-07", "display_dates": "01/09 a 07/09", "members": ["ALESSANDRO APARECIDO MOREIRA DE ANDRADE"]},
+                                {"dates": "2025-09-08/2025-09-14", "display_dates": "08/09 a 14/09", "members": ["JULIAN TABORDA DE DEUS"]},
+                                {"dates": "2025-09-15/2025-09-21", "display_dates": "15/09 a 21/09", "members": ["ALESSANDRO APARECIDO MOREIRA DE ANDRADE", "ALEF RAFAEL DOS SANTOS", "TIAGO ARLAN DOS SANTOS"]},
+                                {"dates": "2025-09-22/2025-09-28", "display_dates": "22/09 a 28/09", "members": ["ALESSANDRO APARECIDO MOREIRA DE ANDRADE", "JULIAN TABORDA DE DEUS"]},
+                                {"dates": "2025-09-29/2025-09-30", "display_dates": "29/09 a 30/09", "members": ["ALEF RAFAEL DOS SANTOS", "TIAGO ARLAN DOS SANTOS"]}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        class OrganogramaApp {
+            constructor() {
+                this.cacheDOMElements();
+                this.state = { data: {}, currentUser: null, currentTechForPanel: null };
+                this.credentials = { admin: 'padrao123', user: 'gegcli2014' };
+                this.clockInterval = null;
+                this.teamIcons = {
+                    'Gestor': 'fa-solid fa-user-tie',
+                    'Logística': 'fa-solid fa-truck-fast',
+                    'Implantação': 'fa-solid fa-screwdriver-wrench',
+                    'Suporte': 'fa-solid fa-headset',
+                    'Escala': 'fa-solid fa-calendar-days',
+                    'Localidades': 'fa-solid fa-map-location-dot'
+                };
+                this.init();
+            }
+
+            cacheDOMElements() {
+                this.elements = {
+                    body: document.body,
+                    loginScreen: document.getElementById('login-screen'),
+                    mainContent: document.getElementById('main-content'),
+                    loginForm: document.getElementById('login-form'),
+                    loginError: document.getElementById('login-error'),
+                    branchList: document.getElementById('branch-list'),
+                    contentArea: document.getElementById('content-area'),
+                    adminActions: document.getElementById('admin-actions'),
+                    logoutButton: document.getElementById('logout-button'),
+                    editDataButton: document.getElementById('edit-data-button'),
+                    clockElement: document.getElementById('real-time-clock'),
+                    searchBar: document.getElementById('search-bar'),
+                    techPanel: document.getElementById('technician-details-panel'),
+                    detailsOverlay: document.getElementById('details-overlay'),
+                    panelCloseBtn: document.getElementById('panel-close-btn'),
+                    panelTechName: document.getElementById('panel-tech-name'),
+                    panelTechPhoto: document.getElementById('panel-tech-photo'),
+                    panelTechContact: document.getElementById('panel-tech-contact'),
+                    panelTechMapLink: document.getElementById('panel-tech-map-link'),
+                    panelOncallStatus: document.getElementById('panel-oncall-status'),
+                    panelScheduleList: document.getElementById('panel-schedule-list'),
+                    panelObservationsList: document.getElementById('panel-observations-list'),
+                    observationInput: document.getElementById('observation-input'),
+                    addObservationBtn: document.getElementById('add-observation-btn'),
+                    notificationBtn: document.getElementById('notification-btn'),
+                    modalOverlay: document.getElementById('data-editor-modal'),
+                    toastContainer: document.getElementById('toast-container'),
+                    themeToggle: document.getElementById('theme-toggle'),
+                    menuToggle: document.getElementById('menu-toggle'),
+                    sidebar: document.getElementById('sidebar'),
+                };
+            }
+
+            init() {
+                this.initTheme();
+                this.initEventListeners();
+                this.initAuth();
+            }
+            
+            initTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                this.elements.body.classList.toggle('light-theme', savedTheme === 'light');
+                this.elements.themeToggle.checked = savedTheme === 'dark';
+            }
+
+            initEventListeners() {
+                this.elements.loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+                this.elements.logoutButton.addEventListener('click', () => this.showLoginScreen());
+                this.elements.searchBar.addEventListener('input', () => this.handleSearch());
+                this.elements.branchList.addEventListener('click', (e) => this.handleSidebarClick(e));
+                this.elements.contentArea.addEventListener('click', (e) => this.handleContentClick(e));
+                this.elements.themeToggle.addEventListener('change', () => this.toggleTheme());
+                this.elements.menuToggle.addEventListener('click', () => this.toggleMenu());
+                this.elements.detailsOverlay.addEventListener('click', () => {
+                    if (this.elements.sidebar.classList.contains('open')) this.toggleMenu();
+                    if (this.elements.techPanel.classList.contains('open')) this.closePanel();
+                });
+                this.elements.panelCloseBtn.addEventListener('click', () => this.closePanel());
+                this.elements.addObservationBtn.addEventListener('click', () => this.addObservation());
+                this.elements.panelObservationsList.addEventListener('click', (e) => this.handleObservationAction(e));
+                this.elements.notificationBtn.addEventListener('click', () => this.handleNotificationRequest());
+            }
+
+            initAuth() {
+                const loggedInUser = sessionStorage.getItem('loggedInUser');
+                if (loggedInUser && this.credentials[loggedInUser]) {
+                    this.showMainScreen(loggedInUser);
+                } else {
+                    this.showLoginScreen();
+                }
+            }
+
+            handleLogin(event) {
+                event.preventDefault();
+                const { username, password } = this.elements.loginForm;
+                if (this.credentials[username.value] === password.value) {
+                    sessionStorage.setItem('loggedInUser', username.value);
+                    this.showMainScreen(username.value);
+                } else {
+                    this.elements.loginError.textContent = 'Usuário ou senha inválidos.';
+                }
+            }
+
+            showLoginScreen() {
+                this.stopClock();
+                this.elements.mainContent.classList.remove('visible');
+                this.elements.loginScreen.classList.remove('hidden');
+                this.elements.menuToggle.style.display = 'none';
+                this.elements.loginForm.reset();
+                sessionStorage.removeItem('loggedInUser');
+            }
+
+            showMainScreen(username) {
+                this.state.currentUser = username;
+                this.elements.loginScreen.classList.add('hidden');
+                this.elements.mainContent.classList.add('visible');
+                if (window.innerWidth <= 768) {
+                    this.elements.menuToggle.style.display = 'block';
+                }
+                this.elements.adminActions.style.display = (username === 'admin') ? 'block' : 'none';
+                this.startClock();
+                this.loadData();
+            }
+
+            loadData() {
+                try {
+                    const savedData = localStorage.getItem('mindmapData');
+                    this.state.data = JSON.parse(savedData) || initialData;
+                } catch (e) {
+                    this.state.data = { branches: [] };
+                    this.showToast('Erro ao carregar dados.', 'error');
+                }
+                this.render();
+            }
+
+            render(searchTerm = '') {
+                const normalizedSearch = searchTerm.toLowerCase().trim();
+                this.elements.branchList.innerHTML = '';
+                this.elements.contentArea.innerHTML = '';
+                
+                this.renderOverviewTab();
+                this.renderOverviewDetails();
+
+                let firstMatchId = null;
+
+                (this.state.data.branches || []).forEach(branch => {
+                    const isMatch = !normalizedSearch || this.isBranchMatchingSearch(branch, normalizedSearch);
+                    if (isMatch) {
+                        if (!firstMatchId) firstMatchId = branch.id;
+                        this.renderBranchListItem(branch);
+                        this.renderBranchDetails(branch);
+                    }
+                });
+
+                this.activateTab(firstMatchId || 'overview-content');
+                this.highlightSearchResults();
+            }
+
+            isBranchMatchingSearch(branch, term) {
+                return branch.name.toLowerCase().includes(term) ||
+                       (branch.teams || []).some(team =>
+                           (team.contacts || (team.schedule ? team.schedule.flatMap(w => w.members) : []))
+                           .some(c => this.getContactString(c).toLowerCase().includes(term))
+                       );
+            }
+
+            renderOverviewTab() {
+                const li = document.createElement('li');
+                li.dataset.target = 'overview-content';
+                li.innerHTML = `<span><i class="fa-solid fa-eye"></i> Visão Geral</span><span class="arrow"></span>`;
+                this.elements.branchList.appendChild(li);
+            }
+
+            renderOverviewDetails() {
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'branch-details';
+                detailsDiv.id = 'overview-content';
+                
+                let onCallHtml = '';
+                (this.state.data.branches || []).forEach(branch => {
+                    (branch.teams || []).forEach(team => {
+                        if (team.schedule) {
+                            team.schedule.forEach(week => {
+                                if (this.isCurrentDateInRange(week.dates)) {
+                                    onCallHtml += `
+                                        <div class="contact-card">
+                                            <div class="contact-content">
+                                                <div class="info">${branch.name} - ${team.type.replace('Escala de Sobreaviso - ', '')}</div>
+                                                <div class="title">${week.members.map(m => this.makeTechNameClickable(m, false)).join(' | ')}</div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            });
+                        }
+                    });
+                });
+
+                const today = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+                detailsDiv.innerHTML = `
+                    <div class="team-group">
+                        <h2><i class="fa-solid fa-user-clock"></i> Sobreaviso Ativo Hoje (${today})</h2>
+                        ${onCallHtml || '<p>Nenhum técnico em sobreaviso encontrado para a data de hoje.</p>'}
+                    </div>`;
+                this.elements.contentArea.appendChild(detailsDiv);
+            }
+            
+            renderBranchListItem(branch) {
+                const li = document.createElement('li');
+                li.dataset.target = branch.id;
+                li.innerHTML = `<span>${branch.name}</span><span class="arrow"></span>`;
+                this.elements.branchList.appendChild(li);
+            }
+            
+            renderBranchDetails(branch) {
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'branch-details';
+                detailsDiv.id = branch.id;
+
+                const weatherContainer = `<div class="weather-container" data-city-name="${branch.name.split('(')[0].trim()}"></div>`;
+
+                const teamsHtml = (branch.teams || []).map(team => {
+                    const icon = Object.keys(this.teamIcons).find(key => team.type.includes(key));
+                    const iconClass = this.teamIcons[icon] || 'fa-solid fa-users';
+                    return `
+                        <div class="team-group">
+                            <h2><i class="${iconClass}"></i> ${team.type}</h2>
+                            ${team.schedule ? `<div class="on-call-schedule">${team.schedule.map(week => this.renderScheduleWeek(week)).join('')}</div>` : ''}
+                            ${(team.contacts || []).map(c => this.renderContactCard(c)).join('')}
+                        </div>
+                    `;
+                }).join('');
+
+                detailsDiv.innerHTML = weatherContainer + teamsHtml;
+                this.elements.contentArea.appendChild(detailsDiv);
+            }
+
+            renderScheduleWeek(week) {
+                const isCurrent = this.isCurrentDateInRange(week.dates);
+                return `<div class="on-call-week ${isCurrent ? 'current' : ''}" data-schedule-members="${week.members.join(',')}">
+                            <div class="dates">Semana: ${week.display_dates}</div>
+                            <div class="members"><strong>Equipe:</strong> ${week.members.map(m => this.makeTechNameClickable(m)).join(' | ')}</div>
+                        </div>`;
+            }
+
+            renderContactCard(contact) {
+                const contactString = this.getContactString(contact);
+                return `<div class="contact-card" data-contact="${contactString}">
+                            <div class="contact-content">
+                                <div class="title">${this.makeTechNameClickable(contact)}</div>
+                            </div>
+                            <div class="contact-actions">
+                                <button class="copy-btn" title="Copiar" data-copy-text="${contactString}"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>`;
+            }
+
+            makeTechNameClickable(contact, includeStar = true) {
+                const contactString = this.getContactString(contact);
+                const baseName = this.extractBaseName(contactString);
+                const hasObs = this.hasObservation(baseName);
+                const starIcon = includeStar && hasObs ? `<span class="observation-star" title="Possui observações">⭐</span>` : '';
+                const onCallClass = this.getOnCallStatus(baseName) ? 'on-call-current' : '';
+                const restOfString = contactString.substring(baseName.length);
+                
+                return `<span class="clickable-tech ${onCallClass}" data-tech-name="${baseName}">${baseName}</span>${starIcon}<span class="info">${restOfString}</span>`;
+            }
+            
+            handleContentClick(event) {
+                const copyBtn = event.target.closest('.copy-btn');
+                if (copyBtn) {
+                    const textToCopy = copyBtn.dataset.copyText;
+                    navigator.clipboard.writeText(textToCopy).then(() => this.showToast(`'${textToCopy}' copiado!`, 'success'))
+                        .catch(() => this.showToast('Falha ao copiar.', 'error'));
+                    return;
+                }
+
+                const tech = event.target.closest('.clickable-tech');
+                if (tech) {
+                    this.openPanel(tech.dataset.techName);
+                }
+            }
+
+            handleSidebarClick(event) {
+                const targetLi = event.target.closest('li[data-target]');
+                if (targetLi) {
+                    this.activateTab(targetLi.dataset.target);
+                    if (window.innerWidth <= 768 && this.elements.sidebar.classList.contains('open')) {
+                        this.toggleMenu();
+                    }
+                }
+            }
+            
+            activateTab(targetId) {
+                this.elements.branchList.querySelectorAll('li').forEach(li => li.classList.toggle('active', li.dataset.target === targetId));
+                this.elements.contentArea.querySelectorAll('.branch-details').forEach(div => {
+                    const isActive = div.id === targetId;
+                    div.classList.toggle('active', isActive);
+                    if (isActive) {
+                        const weatherContainer = div.querySelector('.weather-container');
+                        if (weatherContainer && !weatherContainer.innerHTML) { // Fetch weather only if not already loaded
+                            this.fetchWeather(weatherContainer.dataset.cityName, weatherContainer);
+                        }
+                    }
+                });
+            }
+            
+            async fetchWeather(cityName, container) {
+                container.innerHTML = '<p>Carregando previsão do tempo...</p>';
+                try {
+                    // 1. Get geo-coordinates for the city
+                    const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=pt&format=json`);
+                    const geoData = await geoResponse.json();
+                    if (!geoData.results || geoData.results.length === 0) {
+                        throw new Error('Cidade não encontrada.');
+                    }
+                    const { latitude, longitude } = geoData.results[0];
+
+                    // 2. Get weather data using coordinates
+                    const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relativehumidity_2m,precipitation_probability,weathercode,windspeed_10m`);
+                    const weatherData = await weatherResponse.json();
+
+                    // 3. Display the weather
+                    this.displayWeather(weatherData, container);
+                } catch (error) {
+                    container.innerHTML = `<p>Não foi possível obter a previsão do tempo.</p>`;
+                    console.error('Weather fetch error:', error);
+                }
+            }
+
+            getWeatherIcon(weathercode) {
+                if ([0, 1].includes(weathercode)) {
+                    return '<i class="fa-solid fa-sun weather-icon"></i>'; // Sunny
+                } else if ([2, 3].includes(weathercode)) {
+                    return '<i class="fa-solid fa-cloud weather-icon"></i>'; // Cloudy
+                } else if (weathercode >= 51 && weathercode <= 82) {
+                    return '<i class="fa-solid fa-cloud-showers-heavy weather-icon"></i>'; // Rain
+                } else {
+                    return '<i class="fa-solid fa-smog weather-icon"></i>'; // Other
+                }
+            }
+
+            displayWeather(data, container) {
+                const { temperature_2m, weathercode, relativehumidity_2m, precipitation_probability, windspeed_10m } = data.current;
+                const icon = this.getWeatherIcon(weathercode);
+
+                container.innerHTML = `
+                    <div class="weather-main">
+                        ${icon}
+                        <div class="weather-info">
+                            <p class="temperature">${Math.round(temperature_2m)}°C</p>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <p>Chuva: ${precipitation_probability}%</p>
+                        <p>Umidade: ${relativehumidity_2m}%</p>
+                        <p>Vento: ${Math.round(windspeed_10m)} km/h</p>
+                    </div>
+                `;
+            }
+
+            handleSearch() {
+                this.render(this.elements.searchBar.value);
+            }
+
+            highlightSearchResults() {
+                const searchTerm = this.elements.searchBar.value.toLowerCase().trim();
+                document.querySelectorAll('.search-highlight').forEach(el => el.classList.remove('search-highlight'));
+                if (!searchTerm) return;
+                
+                const activeContent = this.elements.contentArea.querySelector('.branch-details.active');
+                let firstMatch = null;
+
+                if (activeContent) {
+                    activeContent.querySelectorAll('.contact-card, .on-call-week').forEach(el => {
+                        const text = el.dataset.contact || el.dataset.scheduleMembers || '';
+                        if (text.toLowerCase().includes(searchTerm)) {
+                            el.classList.add('search-highlight');
+                            if (!firstMatch) firstMatch = el;
+                        }
+                    });
+                }
+                
+                if (firstMatch) {
+                    firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            openPanel(techName) {
+                this.state.currentTechForPanel = techName;
+                this.elements.panelTechName.textContent = techName;
+                
+                const { techData, branch } = this.findTechData(techName);
+                
+                this.elements.panelTechPhoto.src = techData?.photoUrl || `https://i.pravatar.cc/100?u=${techName.replace(/\s/g, '')}`;
+                this.elements.panelTechPhoto.style.display = 'block';
+                this.elements.panelTechContact.textContent = this.getContactString(techData) || techName;
+                
+                if (branch?.map?.query) {
+                    this.elements.panelTechMapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(branch.map.query)}`;
+                    this.elements.panelTechMapLink.textContent = `Ver no Mapa (${branch.name})`;
+                    this.elements.panelTechMapLink.style.display = 'block';
+                } else {
+                    this.elements.panelTechMapLink.style.display = 'none';
+                }
+
+                const isOnCall = this.getOnCallStatus(techName);
+                this.elements.panelOncallStatus.textContent = isOnCall ? 'ATIVO NO SOBREAVISO' : 'Fora do sobreaviso';
+                this.elements.panelOncallStatus.className = isOnCall ? 'active' : 'inactive';
+
+                this.renderPanelSchedules(techName);
+                this.renderPanelObservations();
+
+                this.elements.techPanel.classList.add('open');
+                this.elements.detailsOverlay.classList.add('visible');
+            }
+
+            closePanel() {
+                this.elements.techPanel.classList.remove('open');
+                this.elements.detailsOverlay.classList.remove('visible');
+            }
+            
+            renderPanelSchedules(techName) {
+                let schedulesHTML = '';
+                const baseTechName = this.extractBaseName(techName).toUpperCase();
+                
+                (this.state.data.branches || []).forEach(branch => {
+                    (branch.teams || []).filter(t => t.schedule).forEach(team => {
+                        team.schedule.forEach(week => {
+                            if (week.members.some(m => this.extractBaseName(m).toUpperCase() === baseTechName)) {
+                                const isCurrent = this.isCurrentDateInRange(week.dates);
+                                schedulesHTML += `
+                                    <div class="schedule-item ${isCurrent ? 'current-schedule' : ''}">
+                                        <p><strong>Semana:</strong> ${week.display_dates}</p>
+                                        <p><strong>Equipe:</strong> ${team.type.replace('Escala de Sobreaviso - ', '')} (${branch.name})</p>
+                                    </div>`;
+                            }
+                        });
+                    });
+                });
+                this.elements.panelScheduleList.innerHTML = schedulesHTML || '<p class="info">Nenhuma escala encontrada.</p>';
+            }
+            
+            getObservations() {
+                return JSON.parse(localStorage.getItem(`observations_${this.state.currentTechForPanel}`)) || [];
+            }
+
+            saveObservations(observations) {
+                localStorage.setItem(`observations_${this.state.currentTechForPanel}`, JSON.stringify(observations));
+                this.render(this.elements.searchBar.value);
+            }
+
+            renderPanelObservations() {
+                const observations = this.getObservations().sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                this.elements.panelObservationsList.innerHTML = observations.length 
+                    ? observations.map(obs => `
+                        <div class="observation-item ${obs.highlighted ? 'highlighted' : ''}" data-id="${obs.id}">
+                            <div class="observation-header">
+                                <span class="observation-meta">${new Date(obs.timestamp).toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'})}</span>
+                                <div class="observation-actions">
+                                    <button class="highlight-btn" title="Destacar"><i class="fa-solid fa-star"></i></button>
+                                    <button class="edit-btn" title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                                    <button class="delete-btn" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                            <div class="observation-content">
+                                <p>${obs.text.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        </div>`).join('') 
+                    : '<p class="info">Nenhuma observação adicionada.</p>';
+            }
+
+            addObservation() {
+                const text = this.elements.observationInput.value.trim();
+                if (text) {
+                    let observations = this.getObservations();
+                    observations.push({ id: Date.now(), text, highlighted: false, timestamp: new Date().toISOString() });
+                    this.saveObservations(observations);
+                    this.renderPanelObservations();
+                    this.elements.observationInput.value = '';
+                }
+            }
+            
+            handleObservationAction(event) {
+                const button = event.target.closest('button');
+                if (!button) return;
+
+                const item = button.closest('.observation-item');
+                const id = Number(item.dataset.id);
+                let observations = this.getObservations();
+                
+                if (button.classList.contains('highlight-btn')) {
+                    const obs = observations.find(o => o.id === id);
+                    if (obs) obs.highlighted = !obs.highlighted;
+                    this.saveObservations(observations);
+                    this.renderPanelObservations();
+                } else if (button.classList.contains('delete-btn')) {
+                    if (confirm('Tem certeza que deseja excluir esta observação?')) {
+                        observations = observations.filter(o => o.id !== id);
+                        this.saveObservations(observations);
+                        this.renderPanelObservations();
+                    }
+                } else if (button.classList.contains('edit-btn')) {
+                    this.toggleObservationEdit(item, true);
+                } else if (button.classList.contains('save-edit-btn')) {
+                    const newText = item.querySelector('textarea').value;
+                    const obs = observations.find(o => o.id === id);
+                    if (obs) obs.text = newText;
+                    this.saveObservations(observations);
+                    this.toggleObservationEdit(item, false);
+                } else if (button.classList.contains('cancel-edit-btn')) {
+                    this.toggleObservationEdit(item, false);
+                }
+            }
+            
+            toggleObservationEdit(item, isEditing) {
+                const content = item.querySelector('.observation-content');
+                const actions = item.querySelector('.observation-actions');
+                const obs = this.getObservations().find(o => o.id === Number(item.dataset.id));
+
+                if (isEditing) {
+                    content.innerHTML = `<textarea>${obs.text}</textarea>`;
+                    actions.innerHTML = `
+                        <button class="save-edit-btn" title="Salvar"><i class="fa-solid fa-check"></i></button>
+                        <button class="cancel-edit-btn" title="Cancelar"><i class="fa-solid fa-times"></i></button>
+                    `;
+                    content.querySelector('textarea').focus();
+                } else {
+                    this.renderPanelObservations();
+                }
+            }
+            
+            handleNotificationRequest() {
+                if (!('Notification' in window)) {
+                    this.showToast('Este navegador não suporta notificações.', 'error');
+                    return;
+                }
+
+                if (Notification.permission === 'granted') {
+                    this.showToast('Permissão já concedida. Verificando escalas...', 'success');
+                    this.checkAndNotifyForOnCall();
+                } else if (Notification.permission !== 'denied') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            this.showToast('Permissão concedida!', 'success');
+                            this.checkAndNotifyForOnCall();
+                        } else {
+                            this.showToast('Permissão negada.', 'error');
+                        }
+                    });
+                } else {
+                     this.showToast('Notificações bloqueadas. Altere nas configurações do seu navegador.', 'error');
+                }
+            }
+
+            checkAndNotifyForOnCall() {
+                const now = new Date();
+                const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                let notificationSent = false;
+
+                (this.state.data.branches || []).forEach(branch => {
+                    (branch.teams || []).filter(t => t.schedule).forEach(team => {
+                        team.schedule.forEach(week => {
+                            const startDate = new Date(week.dates.split('/')[0] + 'T00:00:00');
+                            if (startDate >= now && startDate <= oneWeekFromNow) {
+                                const body = `Filial: ${branch.name}\nEquipe: ${team.type.replace('Escala de Sobreaviso - ', '')}\nMembros: ${week.members.join(', ')}`;
+                                new Notification(`Sobreaviso iniciando em ${startDate.toLocaleDateString('pt-BR')}`, {
+                                    body: body,
+                                    icon: 'https://img.icons8.com/color/48/appointment-reminders--v1.png'
+                                });
+                                notificationSent = true;
+                            }
+                        });
+                    });
+                });
+                if (!notificationSent) {
+                    this.showToast('Nenhuma escala de sobreaviso encontrada para os próximos 7 dias.', 'success');
+                }
+            }
+            
+            toggleTheme() {
+                this.elements.body.classList.toggle('light-theme');
+                const theme = this.elements.body.classList.contains('light-theme') ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+            }
+            
+            toggleMenu() {
+                this.elements.sidebar.classList.toggle('open');
+                this.elements.detailsOverlay.classList.toggle('menu-open');
+            }
+
+            startClock() {
+                if (this.clockInterval) clearInterval(this.clockInterval);
+                const updateClock = () => {
+                    this.elements.clockElement.textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                };
+                updateClock();
+                this.clockInterval = setInterval(updateClock, 1000);
+            }
+
+            stopClock() {
+                clearInterval(this.clockInterval);
+            }
+
+            isCurrentDateInRange(dateRangeString) {
+                try {
+                    const [startStr, endStr] = dateRangeString.split('/');
+                    const startDate = new Date(startStr + 'T00:00:00');
+                    const endDate = new Date(endStr + 'T23:59:59');
+                    const now = new Date();
+                    return now >= startDate && now <= endDate;
+                } catch (e) { 
+                    console.error("Erro ao processar data:", dateRangeString, e);
+                    return false; 
+                }
+            }
+
+            getContactString(contact) {
+                if (typeof contact === 'object' && contact !== null) {
+                    return `${contact.name} ${contact.phone || ''}`.trim();
+                }
+                return contact || '';
+            }
+
+            extractBaseName(contact) {
+                const contactString = this.getContactString(contact);
+                return contactString.split(/[:(]/)[0].trim();
+            }
+            
+            findTechData(techName) {
+                let techData = null;
+                let branchData = null;
+                (this.state.data.branches || []).forEach(branch => {
+                    (branch.teams || []).forEach(team => {
+                        (team.contacts || []).forEach(contact => {
+                            if (this.extractBaseName(contact) === techName) {
+                                techData = contact;
+                                branchData = branch;
+                            }
+                        });
+                    });
+                });
+                return { techData, branch: branchData };
+            }
+
+            hasObservation(techName) {
+                return (localStorage.getItem(`observations_${this.extractBaseName(techName)}`) || '[]') !== '[]';
+            }
+
+            getOnCallStatus(techName) {
+                const baseName = this.extractBaseName(techName).toUpperCase();
+                return (this.state.data.branches || []).some(b => (b.teams || []).some(t => t.schedule && t.schedule.some(w => this.isCurrentDateInRange(w.dates) && w.members.some(m => this.extractBaseName(m).toUpperCase() === baseName))));
+            }
+            
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                this.elements.toastContainer.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.add('show'));
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.addEventListener('transitionend', () => toast.remove());
+                }, 3000);
+            }
+        }
+
+        new OrganogramaApp();
+    });
+    </script>
+</body>
+</html>
